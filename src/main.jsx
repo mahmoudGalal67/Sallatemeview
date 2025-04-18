@@ -23,7 +23,7 @@ import Favorite from "./pages/Favorite/Favorite.jsx";
 
 const router = createBrowserRouter([
   {
-    path: "/design",
+    path: "/",
     element: <Home />,
   },
   {
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
     element: <Favorite />,
   },
   {
-    path: "/",
+    path: "/design",
     element: <HomeDesign />,
   },
 ]);

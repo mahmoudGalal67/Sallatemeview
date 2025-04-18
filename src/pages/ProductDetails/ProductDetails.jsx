@@ -29,31 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AuthContext } from "../../components/context/Auth";
 import { useCookies } from "react-cookie";
 
-import img1 from "../../assets/dummyphotos/pexels-cottonbro-7816738.jpg";
-import img2 from "../../assets/dummyphotos/pexels-cottonbro-9881075.jpg";
-import img3 from "../../assets/dummyphotos/pexels-cottonbro-9881821.jpg";
-import img4 from "../../assets/dummyphotos/pexels-darkshadephotos-29118561.jpg";
-import img5 from "../../assets/dummyphotos/pexels-hamidoffstudio-19298248.jpg";
-import img6 from "../../assets/dummyphotos/pexels-kath-geroso-2151382636-31645192.jpg";
-import img7 from "../../assets/dummyphotos/pexels-pavel-danilyuk-8422394.jpg";
-import img8 from "../../assets/dummyphotos/pexels-rdne-7249299.jpg";
-import img9 from "../../assets/dummyphotos/pexels-thelazyartist-1149840.jpg";
-import img10 from "../../assets/dummyphotos/pexels-tima-miroshnichenko-5974075.jpg";
-import img11 from "../../assets/dummyphotos/pexels-yankrukov-8911507.jpg";
-
-const photos = [
-  [img1, img2, img3],
-  [img4],
-  [img5, img6, img7, img8, img9],
-  [img10],
-  [img11],
-  [img1],
-  [img2],
-  [img3],
-  [img4],
-  [img5],
-  [img6],
-];
+import { productsDummy } from "../../dummyproducts";
 
 function ProductDetails() {
   let [searchParams, setSearchParams] = useSearchParams();
@@ -121,27 +97,26 @@ function ProductDetails() {
       firstPhoto: ProductDetails.photoes[i],
     }));
   };
-
   const handleSizeChange = (e) => {
     setSizeId(Number(e.target.value));
   };
   useEffect(() => {
     const getProductDetails = async () => {
       try {
-        const { data } = await request({
-          url: `/api/Product_details/Getbyid?id=${id}`,
-        });
-        setProductDetails({
-          ...data[0],
-          photoes: photos[Math.floor(Math.random() * 7)],
-        });
+        // const { data } = await request({
+        //   url: `/api/Product_details/Getbyid?id=${id}`,
+        // });
+        setProductDetails(
+          productsDummy[0].brandsDto[0].productDto.find(
+            (item) => (item.product_id = id)
+          )
+        );
       } catch (error) {
         setErr(error);
       }
     };
     getProductDetails();
   }, []);
-
   useEffect(() => {
     function randomIntFromInterval(min, max) {
       // min and max included
@@ -180,24 +155,40 @@ function ProductDetails() {
 
   const handleAddToCart = async (product) => {
     try {
-      const { data } = await request({
-        url: `/api/Clients/add_orders?uid=${
-          user.userId
-        }&admin_id=${searchParams.get("id")}`,
-        method: "POST",
-        data: {
-          product_id: product.product_id,
-          product_name: product.product_name_ar,
-          price:
-            product.product_colors?.size_price?.length > 0
-              ? product.product_colors.size_price[SizeId]
-              : product.price,
-          admin_id: searchParams.get("id"),
-          quantity: count,
-        },
-        headers: { Authorization: `Bearer ${cookies?.usertoken}` },
-      });
-      dispatch(addItemToCart({ ...product, ...data[0] }));
+      // const { data } = await request({
+      //   url: `/api/Clients/add_orders?uid=${
+      //     user.userId
+      //   }&admin_id=${searchParams.get("id")}`,
+      //   method: "POST",
+      //   data: {
+      //     product_id: product.product_id,
+      //     product_name: product.product_name_ar,
+      //     price:
+      //       product.product_colors?.size_price?.length > 0
+      //         ? product.product_colors.size_price[SizeId]
+      //         : product.price,
+      //     admin_id: searchParams.get("id"),
+      //     quantity: count,
+      //   },
+      //   headers: { Authorization: `Bearer ${cookies?.usertoken}` },
+      // });
+      dispatch(
+        addItemToCart({
+          ...product,
+
+          ...{
+            product_id: product.product_id,
+            product_name: product.product_name_ar,
+            photoes: product.photoes[0],
+            price:
+              product.product_colors?.size_price?.length > 0
+                ? product.product_colors.size_price[SizeId]
+                : product.price,
+            admin_id: searchParams.get("id"),
+            quantity: count,
+          },
+        })
+      );
     } catch (err) {
       console.log(err);
     }
@@ -248,7 +239,7 @@ function ProductDetails() {
           </div>
           <p>{ProductDetails.description_ar}</p>
           <Accordion defaultActiveKey="0">
-            {ProductDetails.product_colors.length > 0 ? (
+            {ProductDetails.product_colors?.length > 0 ? (
               <Accordion.Item>
                 <Accordion.Header>
                   {" "}
@@ -263,29 +254,17 @@ function ProductDetails() {
                   <div className="images">
                     <h3>صور المنتج</h3>
                     <div className="wrapper flex justify-content-end">
-                      {/* {ProductDetails.product_colors &&
+                      {ProductDetails.product_colors &&
                         ProductDetails.product_colors[
                           ProductColorID
                         ].photoes.map((img, i) => (
                           <ModalImage
-                            small={`https://salla1111-001-site1.ptempurl.com/${img}`}
-                            large={`https://salla1111-001-site1.ptempurl.com/${img}`}
-                            small={`${img}`}
+                            small={`/${img}`}
                             large={`${img}`}
                             alt={i}
                             key={i}
                           />
-                        ))} */}
-                      {photos[Math.floor(Math.random() * 7)].map((img, i) => (
-                        <ModalImage
-                          // small={`https://salla1111-001-site1.ptempurl.com/${img}`}
-                          // large={`https://salla1111-001-site1.ptempurl.com/${img}`}
-                          small={`${img}`}
-                          large={`${img}`}
-                          alt={i}
-                          key={i}
-                        />
-                      ))}
+                        ))}
                     </div>
                   </div>
                   <div className="colors">
@@ -353,8 +332,7 @@ function ProductDetails() {
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
-          {ProductDetails.product_colors[0].color_name &&
-          ProductDetails.product_colors ? (
+          {ProductDetails?.product_colors && ProductDetails.product_colors ? (
             <div className="choose-size flex w-100 justify-content-between gap-3 p-4">
               <select
                 onChange={(e) => handleSizeChange(e)}
@@ -437,10 +415,12 @@ function ProductDetails() {
                 //   }` || "image-two.dd7d3cfc16bf56c43f01.png"
                 // }
                 src={
-                  `${
+                  `/${
                     ProductDetails.firstPhoto != undefined
                       ? ProductDetails?.firstPhoto
-                      : ProductDetails?.photoes[0]
+                      : ProductDetails?.photoes
+                      ? ProductDetails?.photoes[0]
+                      : ""
                   }` || "image-two.dd7d3cfc16bf56c43f01.png"
                 }
                 alt=""
@@ -462,10 +442,12 @@ function ProductDetails() {
                 //   }` || "image-two.dd7d3cfc16bf56c43f01.png"
                 // }
                 src={
-                  `${
+                  `/${
                     ProductDetails.firstPhoto != undefined
                       ? ProductDetails?.firstPhoto
-                      : ProductDetails?.photoes[0]
+                      : ProductDetails?.photoes
+                      ? ProductDetails?.photoes[0]
+                      : ""
                   }` || "image-two.dd7d3cfc16bf56c43f01.png"
                 }
               />
@@ -507,7 +489,7 @@ function ProductDetails() {
                           src={`https://salla1111-001-site1.ptempurl.com/${img}`}
                           alt=""
                         /> */}
-                        <img src={`${img}`} alt="" />
+                        <img src={`/${img}`} alt="" />
                       </div>
                     </SwiperSlide>
                   ))}

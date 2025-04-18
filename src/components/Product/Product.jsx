@@ -37,7 +37,7 @@ const photos = [
   [img6],
 ];
 
-function Product({ product, brand, category, layout }) {
+function Product({ product, brand, category, layout, i }) {
   let [searchParams, setSearchParams] = useSearchParams();
 
   const { user } = useContext(AuthContext);
@@ -66,19 +66,18 @@ function Product({ product, brand, category, layout }) {
         product_name: product.product_name_ar,
         price: product.price,
         admin_id: searchParams.get("id"),
-        // photoes: photos,
-        photoes: photos[Math.floor(Math.random() * 7)],
+        photoes: product.photoes[0],
         quantity: 1,
       };
-      const { data } = await request({
-        url: `/api/Clients/add_orders?uid=${
-          user.userId
-        }&admin_id=${searchParams.get("id")}`,
-        method: "POST",
-        data: productData,
+      // const { data } = await request({
+      //   url: `/api/Clients/add_orders?uid=${
+      //     user.userId
+      //   }&admin_id=${searchParams.get("id")}`,
+      //   method: "POST",
+      //   data: productData,
 
-        headers: { Authorization: `Bearer ${cookies?.usertoken}` },
-      });
+      //   headers: { Authorization: `Bearer ${cookies?.usertoken}` },
+      // });
       dispatch(addItemToCart(productData));
     } catch (err) {
       console.log(err);
@@ -100,7 +99,6 @@ function Product({ product, brand, category, layout }) {
   const isProductFavorite = (productId) => {
     return favoriteItems.some((item) => item.product_id === productId);
   };
-
   return (
     <div
       key={product.product_id}
@@ -111,10 +109,7 @@ function Product({ product, brand, category, layout }) {
       }}
     >
       <img
-        src={
-          photos[Math.floor(Math.random() * 7)][0] ||
-          `https://salla1111-001-site1.ptempurl.com/${product.photoes[0]}`
-        }
+        src={product.photoes[0]}
         alt=""
         style={{
           width: "100%",
@@ -123,11 +118,7 @@ function Product({ product, brand, category, layout }) {
         }}
       />
       <div className="title">{brand.brand_name}</div>
-      <Link
-        to={`/productDetails/${product.product_id}?id=${searchParams.get(
-          "id"
-        )}`}
-      >
+      <Link to={`/productDetails/${i + 1}?id=${searchParams.get("id")}`}>
         <p className="desc">{truncateTitle(product.product_name_ar, 2)}</p>
       </Link>
       <p className="info">{category.category_name_ar}</p>

@@ -21,7 +21,6 @@ import { Link, useSearchParams } from "react-router-dom";
 import { request } from "../../components/utils/Request";
 import { useDispatch, useSelector } from "react-redux";
 
-import { products } from "../../components/StaticProducts/dummyProducts";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../components/context/Auth";
 
@@ -45,6 +44,7 @@ import img8 from "../../assets/dummyphotos/pexels-rdne-7249299.jpg";
 import img9 from "../../assets/dummyphotos/pexels-thelazyartist-1149840.jpg";
 import img10 from "../../assets/dummyphotos/pexels-tima-miroshnichenko-5974075.jpg";
 import img11 from "../../assets/dummyphotos/pexels-yankrukov-8911507.jpg";
+import { productsDummy } from "../../dummyproducts";
 
 const photos = [
   [img1, img2, img3],
@@ -132,14 +132,14 @@ function Products() {
         photoes: product.photoes,
         quantity: 1,
       };
-      const { data } = await request({
-        url: `/api/Clients/add_orders?uid=${
-          user.userId
-        }&admin_id=${searchParams.get("id")}`,
-        method: "POST",
-        data: productData,
-        headers: { Authorization: `Bearer ${cookies?.usertoken}` },
-      });
+      // const { data } = await request({
+      //   url: `/api/Clients/add_orders?uid=${
+      //     user.userId
+      //   }&admin_id=${searchParams.get("id")}`,
+      //   method: "POST",
+      //   data: productData,
+      //   headers: { Authorization: `Bearer ${cookies?.usertoken}` },
+      // });
       dispatch(addItemToCart(productData));
     } catch (err) {
       console.log(err);
@@ -170,9 +170,9 @@ function Products() {
         //     "id"
         //   )}&page=${page}&pageSize=${pageSize}`,
         // });
-        const { data } = await request({
-          url: `/api/Clients/Getall?userid=${searchParams.get("id")}`,
-        });
+        // const { data } = await request({
+        //   url: `/api/Clients/Getall?userid=${searchParams.get("id")}`,
+        // });
         // setHasMore(data.totalItems > data.currentPage * pageSize);
         // setCategories([
         //   ...new Set(
@@ -184,7 +184,7 @@ function Products() {
         // ]);
         setCategories([
           ...new Set(
-            data.map((product) => ({
+            productsDummy.map((product) => ({
               id: product.category_id,
               name: product.category_name_ar,
             }))
@@ -221,11 +221,11 @@ function Products() {
         //     }
         //   });
         // });
-        setProducts(data);
+        setProducts(productsDummy);
 
         // setHasMore(data.totalItems > data.currentPage * pageSize);
         // extractAllBrands(data.items);
-        extractAllBrands(data);
+        extractAllBrands(productsDummy);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -253,7 +253,6 @@ function Products() {
     };
     fetchData();
   }, [page]);
-  console.log(products);
   // Fillteration
   // State to store filters
   const [filters, setFilters] = useState({
@@ -476,10 +475,7 @@ function Products() {
                               }
                             >
                               <img
-                                src={
-                                  photos[Math.floor(Math.random() * 7)][0] ||
-                                  `https://salla1111-001-site1.ptempurl.com/${product.photoes[0]}`
-                                }
+                                src={`${product.photoes[0]}`}
                                 alt=""
                                 style={{
                                   width: "280px",

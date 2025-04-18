@@ -9,6 +9,7 @@ import { request } from "../utils/Request";
 
 import { products } from "./dummyProducts";
 import Product from "../Product/Product";
+import { productsDummy } from "../../dummyproducts";
 
 function StaticProducts({ searchInput }) {
   let [searchParams, setSearchParams] = useSearchParams();
@@ -18,10 +19,10 @@ function StaticProducts({ searchInput }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await request({
-          url: `/api/Product_details/Getall?userid=${searchParams.get("id")}`,
-        });
-        setStaticProducts(data);
+        // const { data } = await request({
+        //   url: `/api/Product_details/Getall?userid=${searchParams.get("id")}`,
+        // });
+        setStaticProducts(productsDummy);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -40,16 +41,20 @@ function StaticProducts({ searchInput }) {
   return (
     <div className="StaticProducts">
       <div className="headers flex">
+        <div>
+          <h3 style={{ textAlign: "start" }}> Special Products</h3>
+          <p>Market the latest featured products added new</p>
+        </div>
         <Link to={`/products?id=${searchParams.get("id")}`}>
           <button className="custom-link-ouline  btn btn-3 hover-border-3">
-            <img src="arrow.svg" alt="" />
-            <span> عرض الكل</span>
+            <span> Show All</span>
+            <img
+              src="arrow.svg"
+              alt=""
+              style={{ transform: "rotate(180deg)" }}
+            />
           </button>
         </Link>
-        <div>
-          <h3>منتجات مميزة</h3>
-          <p>تسوق احدث المنتجات المميزة المضافة جديد</p>
-        </div>
       </div>
       <div className="wrapper">
         {StaticProducts.map((category) => (
@@ -61,12 +66,13 @@ function StaticProducts({ searchInput }) {
               {category.brandsDto.map((brand) => {
                 return (
                   <Fragment key={brand.brand_id}>
-                    {brand.productDto.map((product) => {
+                    {brand.productDto.map((product, i) => {
                       return (
                         <Product
                           product={product}
                           brand={brand}
                           category={category}
+                          i={i}
                         />
                       );
                     })}

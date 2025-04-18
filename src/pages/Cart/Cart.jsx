@@ -67,32 +67,12 @@ function Cart() {
     try {
       setLoading(true);
       const getCartItems = async () => {
-        const { data } = await request({
-          url: `/api/Clients/getorder_clientfirst?userid=${user.userId}`,
-          headers: {
-            Authorization: `Bearer  ${cookies.usertoken}`,
-          },
-        });
-        const userCart = data.find((item) => item.status == "بانتظار المراجعه");
-        setcartId(userCart.order_id);
-        const cartProducts = await Promise.all(
-          userCart.shopping_carddto.map(async (cart) => {
-            const { data: productDetails } = await request({
-              url: `api/Product_details/Getbyid?id=${cart.product_id}`,
-            });
-            return {
-              order_id: data[0].order_id,
-              product_id: productDetails[0].product_id,
-              price: productDetails[0].price,
-              photoes: productDetails[0].photoes,
-              shopping_cart_id: cart.shopping_cart_id,
-              product_name_ar: productDetails[0].product_name_ar,
-              product_name_en: productDetails[0].product_name_en,
-              quantity: cart.quantity,
-            };
-          })
-        );
-        dispatch(fetchCartItemms([...cartProducts]));
+        // const { data } = await request({
+        //   url: `/api/Clients/getorder_clientfirst?userid=${user.userId}`,
+        //   headers: {
+        //     Authorization: `Bearer  ${cookies.usertoken}`,
+        //   },
+        // });
       };
       getCartItems();
       setLoading(false);
@@ -142,20 +122,6 @@ function Cart() {
       })
     );
     try {
-      const { data } = await request({
-        url: `/api/Clients/add_orders?uid=${
-          user.userId
-        }&admin_id=${searchParams.get("id")}`,
-        method: "POST",
-        data: {
-          product_id: product.product_id,
-          product_name: product.product_name_ar,
-          price: product.price,
-          admin_id: searchParams.get("id"),
-          quantity: product.quantity + 1,
-        },
-        headers: { Authorization: `Bearer ${cookies?.usertoken}` },
-      });
     } catch (err) {
       console.log(err);
     }
@@ -198,6 +164,7 @@ function Cart() {
   };
 
   const handlePayment = async () => {
+    return;
     if (!user) {
       toast.info("You have to log in first");
       return; // Stop further execution if the user is not logged in
@@ -313,10 +280,7 @@ function Cart() {
                   <div className="d-flex justify-content-start mt-2">
                     <div className="py-3">
                       <img
-                        src={
-                          photos[Math.floor(Math.random() * 7)][0] ||
-                          `https://salla1111-001-site1.ptempurl.com/${product?.photoes[0]}`
-                        }
+                        src={`/${product?.photoes}`}
                         height={100}
                         width={100}
                         alt={product.product_name_ar}

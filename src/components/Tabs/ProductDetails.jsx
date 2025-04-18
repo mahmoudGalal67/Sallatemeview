@@ -86,11 +86,13 @@ function Details({ ProductDetails }) {
           </p>
         </div>
       </div> */}
-      <div
-        dangerouslySetInnerHTML={{
-          __html: ProductDetails?.productDetailDto[0]?.details_ar,
-        }}
-      />
+      {ProductDetails?.productDetailDto && (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: ProductDetails?.productDetailDto[0]?.details_ar,
+          }}
+        />
+      )}
     </section>
   );
 }

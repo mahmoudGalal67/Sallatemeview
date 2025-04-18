@@ -23,7 +23,7 @@ function ProductReviews({ ProductDetails }) {
   const [reviewsNumber, setReviewsNumber] = useState(1);
   const [comment, setComment] = useState("");
 
-  const [productReview, setproductReview] = useState(ProductDetails.ratingDto);
+  const [productReview, setproductReview] = useState([]);
   const { id } = useParams();
 
   function getTimeAgo(dateString) {
@@ -54,19 +54,15 @@ function ProductReviews({ ProductDetails }) {
     }
     try {
       setloading(true);
-      const { data } = await request({
-        url: `api/Clients/addrat?uid=${user.userId}&pid=${id}`,
-        method: "post",
-        withCredentials: true,
-        data: {
+      setComment("");
+      setReviewsNumber(1);
+      setproductReview((prev) => [
+        {
           rating_number: reviewsNumber,
           rating_comment: comment,
         },
-        headers: { Authorization: `Bearer ${cookies?.usertoken}` },
-      });
-      setComment("");
-      setReviewsNumber(1);
-      setproductReview((prev) => [data[0], ...prev]);
+        ...prev,
+      ]);
       setloading(false);
     } catch (err) {
       setloading(false);
@@ -137,7 +133,7 @@ function ProductReviews({ ProductDetails }) {
             <p> ترتيب حسب: الأحدث</p>
           </div>
 
-          {productReview.map((review) => (
+          {productReview?.map((review) => (
             <Fragment key={review.rating_id}>
               <div>
                 <div className="d-flex justify-content-between">
@@ -150,7 +146,7 @@ function ProductReviews({ ProductDetails }) {
                       alt=""
                     />
                     <div className="user-info  mt-0">
-                      <p> {review?.usersDto[0]?.name} </p>
+                      <p> client </p>
                       <p style={{ color: "#FFC62A" }}>
                         {new Array(review.rating_number).fill(0).map((rete) => (
                           <FaStar style={{ marginInline: "2px" }} />

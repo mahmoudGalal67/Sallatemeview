@@ -58,10 +58,7 @@ function Favorite() {
                   >
                     <div className="py-3">
                       <img
-                        src={
-                          photos[Math.floor(Math.random() * 7)][0] ||
-                          `https://salla1111-001-site1.ptempurl.com/${product?.photoes[0]}`
-                        }
+                        src={`${product?.photoes[0]}`}
                         height={100}
                         width={100}
                         alt={product.product_name_ar}
